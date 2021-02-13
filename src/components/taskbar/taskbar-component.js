@@ -11,7 +11,10 @@ import {
   Divider,
   Panel
 } from 'react95';
-import logoIMG from '../../assets/images/uni-logo.svg';
+import Counter from '../counter/counter-component'
+
+import uniLogo from '../../assets/images/uni-logo.svg';
+import polypointLogo from '../../assets/images/polypoint-logo.png';
 
 const TaskBar = () => {
   const [open, setOpen] = React.useState(false);
@@ -25,15 +28,15 @@ const TaskBar = () => {
   return (
     <Fragment>
       <AppBar className="TaskBar">
-        <Toolbar style={{ justifyContent: 'space-between' }}>
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+        <Toolbar className="Toolbar is-flex is-justify-content-space-between is-align-items-center">
+          <div>
             <Button
                 onClick={() => setOpen(!open)}
                 active={open}
                 style={{ fontWeight: 'bold' }}
             >
                 <img
-                src={logoIMG}
+                src={uniLogo}
                 alt='react95 logo'
                 style={{ height: '20px', marginRight: 4 }}
                 />
@@ -71,8 +74,10 @@ const TaskBar = () => {
             )}
           </div>
 
-          <div style={{ position: 'relative', display: 'flex', alignItems: "center", marginLeft: 5}}>
-            <Panel variant='well' style={{ padding: '0.2rem 1rem' }}>
+          <div className="is-flex ml-5 is-align-items-center" style={{height: '100%'}}>
+            <Counter logo={polypointLogo} value={0}/>
+            <Bar size={35} />
+            <Panel variant='well' className="ml-2 py-1 px-5">
               {date}
             </Panel>
           </div>

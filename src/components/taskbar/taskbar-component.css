@@ -4,6 +4,10 @@
   top: unset !important;
 }
 
+.Toolbar {
+  height: 100%;
+}
+
 h1 {
   margin-left: 0.5rem !important;
   margin-right: 0.5rem !important;

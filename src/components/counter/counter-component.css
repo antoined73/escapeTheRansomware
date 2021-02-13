@@ -1,0 +1,20 @@
+.counter {
+  height: 100%;
+}
+
+.counterWrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.counter95_override {
+  background-color: black;
+  border: unset !important;
+}
+
+.counterLogo {
+  position: relative;
+  width: 18px;
+  height: 100%;
+}
