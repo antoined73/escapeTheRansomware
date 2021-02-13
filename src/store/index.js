@@ -10,6 +10,7 @@ const getInitPolypoints = () => {
   }
 }
 const initialState = {
+  ransom: 9000,
   polypoints: getInitPolypoints()
 }
 

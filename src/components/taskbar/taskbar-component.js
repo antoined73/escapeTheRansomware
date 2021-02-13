@@ -11,18 +11,12 @@ import {
   Divider,
   Panel
 } from 'react95';
-import Counter from '../counter/counter-component'
-
 import uniLogo from '../../assets/images/uni-logo.svg';
-import polypointLogo from '../../assets/images/polypoint-logo.png';
-
-import { useStoreState } from 'easy-peasy';
+import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
 
 const TaskBar = () => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState();
-
-  const polypoints = useStoreState((state) => state.polypoints);
 
   useEffect(() => {
     const date = new Date();
@@ -79,7 +73,7 @@ const TaskBar = () => {
           </div>
 
           <div className="is-flex ml-5 is-align-items-center" style={{height: '100%'}}>
-            <Counter logo={polypointLogo} value={polypoints}/>
+            <PolypointsCounter/>
             <Bar size={35} />
             <Panel variant='well' className="ml-2 py-1 px-5">
               {date}

@@ -1,0 +1,27 @@
+.counter, .innerCounter {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.counterWrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.counter95_override {
+  background-color: black;
+  border: unset !important;
+}
+
+.counterLogo {
+  position: relative;
+  width: 18px;
+  height: 100%;
+}
+
+.green {
+  -webkit-filter: grayscale(100%) brightness(200%) sepia(100%) hue-rotate(70deg) saturate(1000%) contrast(2);
+  filter: grayscale(100%) brightness(200%) sepia(100%) hue-rotate(70deg) saturate(1000%) contrast(2);
+}
