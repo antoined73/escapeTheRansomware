@@ -6,10 +6,10 @@ const MainLayout = ({children}) => {
   const line = (lineId, columnsNumber, lineHeight) => {
     const columns = [];
     for (let colId = 0; colId < columnsNumber; colId++) {
-      columns.push(<div class="column" id={lineId+'.'+colId} key={lineId+'.'+colId} style={{height: `${lineHeight}vh`}}>{lineId+1 +'.'+ (colId+1)}</div>);
+      columns.push(<div className="column" id={lineId+'.'+colId} key={lineId+'.'+colId} style={{height: `${lineHeight}vh`}}>{lineId+1 +'.'+ (colId+1)}</div>);
     }
     return (
-      <div class="columns" key={lineId}>
+      <div className="columns" key={lineId}>
         {columns}
       </div>
     );
