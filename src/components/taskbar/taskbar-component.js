@@ -14,7 +14,7 @@ import {
 import uniLogo from '../../assets/images/uni-logo.svg';
 import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
 
-const TaskBar = () => {
+const TaskBar = ({height}) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState();
 
@@ -25,7 +25,7 @@ const TaskBar = () => {
 
   return (
     <Fragment>
-      <AppBar className="TaskBar">
+      <AppBar className="TaskBar" style={{height: height}}>
         <Toolbar className="Toolbar is-flex is-justify-content-space-between is-align-items-center">
           <div>
             <Button
