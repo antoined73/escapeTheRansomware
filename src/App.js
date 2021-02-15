@@ -10,6 +10,9 @@ import ms_sans_serif_bold from "react95/dist/fonts/ms_sans_serif_bold.woff2";
 
 import MainLayout from "./layouts/main/main-layout";
 
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 const GlobalStyles = createGlobalStyle`
   @font-face {
     font-family: 'ms_sans_serif';
@@ -33,9 +36,9 @@ const App = () => (
   <div className="App">
     <GlobalStyles />
     <ThemeProvider theme={original}>
-      <MainLayout>
-
-      </MainLayout>
+      <DndProvider backend={HTML5Backend}>
+        <MainLayout/>
+      </DndProvider>
     </ThemeProvider>
   </div>
 );
