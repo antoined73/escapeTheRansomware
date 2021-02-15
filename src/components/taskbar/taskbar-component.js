@@ -18,9 +18,18 @@ const TaskBar = () => {
   const [date, setDate] = React.useState();
 
   useEffect(() => {
-    const date = new Date();
-    setDate(date.getHours()+":"+date.getMinutes());
-  },[]);
+    // set up a function to properly format the time
+    function doDate() {
+      const date = new Date();
+      setDate(("0" + date.getHours()).slice(-2) + ":"
+        + ("0" + date.getMinutes()).slice(-2) + ":"
+        + ("0" + date.getSeconds()).slice(-2));
+    }
+
+    // call the function each second
+    doDate();
+    setInterval(doDate, 1000);
+  }, []);
 
   return (
     <Fragment>
@@ -28,50 +37,50 @@ const TaskBar = () => {
         <Toolbar style={{ justifyContent: 'space-between' }}>
           <div style={{ position: 'relative', display: 'inline-block' }}>
             <Button
-                onClick={() => setOpen(!open)}
-                active={open}
-                style={{ fontWeight: 'bold' }}
+              onClick={() => setOpen(!open)}
+              active={open}
+              style={{ fontWeight: 'bold' }}
             >
-                <img
+              <img
                 src={logoIMG}
                 alt='react95 logo'
                 style={{ height: '20px', marginRight: 4 }}
-                />
+              />
                 Start
             </Button>
             {open && (
-                <List
+              <List
                 style={{
-                    position: 'absolute',
-                    left: '0',
-                    bottom: '100%'
+                  position: 'absolute',
+                  left: '0',
+                  bottom: '100%'
                 }}
                 onClick={() => setOpen(false)}
-                >
+              >
                 <ListItem>
-                    <span role='img' aria-label='👨‍💻'>
+                  <span role='img' aria-label='👨‍💻'>
                     👨‍💻
                     </span>
                     Profile
                 </ListItem>
                 <ListItem>
-                    <span role='img' aria-label='📁'>
+                  <span role='img' aria-label='📁'>
                     📁
                     </span>
                     My account
                 </ListItem>
                 <Divider />
                 <ListItem disabled>
-                    <span role='img' aria-label='🔙'>
+                  <span role='img' aria-label='🔙'>
                     🔙
                     </span>
                     Logout
                 </ListItem>
-                </List>
+              </List>
             )}
           </div>
 
-          <div style={{ position: 'relative', display: 'flex', alignItems: "center", marginLeft: 5}}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: "center", marginLeft: 5 }}>
             <Panel variant='well' style={{ padding: '0.2rem 1rem' }}>
               {date}
             </Panel>
