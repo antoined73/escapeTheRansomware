@@ -35,7 +35,7 @@ const TaskBar = ({ height, windows }) => {
     <Fragment>
       <AppBar className="TaskBar" style={{ height: height }}>
         <Toolbar className="Toolbar is-flex is-justify-content-space-between is-align-items-center">
-          <div>
+          <div className="is-flex is-align-items-flex-start">
             <Button
               onClick={() => setOpen(!open)}
               active={open}
@@ -79,7 +79,8 @@ const TaskBar = ({ height, windows }) => {
               </List>
             )}
 
-            {windows
+            <div className="is-flex ml-5 is-align-items-center">
+              {windows
               .sort((a, b) => {
                 // tri des fenetres dans l'ordre de leur id
                 return a.id - b.id;
@@ -87,8 +88,9 @@ const TaskBar = ({ height, windows }) => {
               .map(window => {
                 // affichage des boutons dans la barre des taches
                 const { title, id, focused } = window;
-                return (<Button id={id}>{title}</Button>);
+                return (<Button key={id} id={id}><span style={{width: 100, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}>{title}</span></Button>);
               })}
+            </div>
           </div>
 
           <div className="is-flex ml-5 is-align-items-center" style={{ height: '100%' }}>
