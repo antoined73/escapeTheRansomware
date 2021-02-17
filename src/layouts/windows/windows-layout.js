@@ -45,11 +45,11 @@ const WindowsLayout = () => {
   const displayWindows = () => {
     return windows.map(window => {
       const { position, height, width, title, id, focused, status } = window;
-
+      console.log(status)
       return (
         <Window key={id} id={id} title={title} 
         position={position} height={height} width={width} 
-        maximized={status=="maximized"} active={focused}
+        maximized={status==="maximized"} active={focused}
         onClick={() => { focusWindow(id); }}
         onClose={() => { deleteWindow(id); }} 
         onMinimize={() => { minimizeWindow(id); }} 

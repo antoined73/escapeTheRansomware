@@ -103,7 +103,7 @@ const TaskBar = ({ height }) => {
         return (
         <Button key={id} id={id} 
         onClick={() => { toggleMinimize_sa({id}) }}
-        active={window.status=="free"?true:false }>
+        active={window.status!=="minimized"}>
           <span style={{width: 100, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}>{title}</span>
         </Button>);
       })}

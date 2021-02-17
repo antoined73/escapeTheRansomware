@@ -70,17 +70,26 @@ const initialState = {
 
 const windowsModel = {
   ...initialState,
-  displayedWindows : computed((state) => state.windows.filter(w => w.status=="free")),
+  displayedWindows : computed((state) => state.windows.filter(w => w.status!=="minimized")),
   moveWindow : thunk((actions, payload, {getState}) => {
     const { id, position } = payload;
     const state = getState();
 
-    const newWindows = [ ...state.windows ];
-    const windowToMove = newWindows.find(w => w.id === id);
+    const windowToMove = state.windows.find(w => w.id === id);
+    if(!windowToMove) return;
 
     windowToMove.position = position;
-    state.windows = newWindows;
+    actions.focusWindow({id});
+  }),
+  resizeWindow: thunk((actions, payload, {getState}) => {
+    const { id, width, height } = payload;
+    const state = getState();
 
+    const windowToMove = state.windows.find(w => w.id === id);
+    if(!windowToMove) return;
+
+    windowToMove.width = width;
+    windowToMove.height = height;
     actions.focusWindow({id});
   }),
   focusWindow : action((state, payload) => {
@@ -94,6 +103,16 @@ const windowsModel = {
     const index = newWindows.indexOf(windowToMove);
     if(index != newWindows.length-1) newWindows.push(newWindows.splice(index, 1)[0]); // reorder to top
     state.windows = newWindows;
+  }),
+  maximizeWindow : action((state, payload) => {
+    const {id} = payload;
+    const windowToMaximize = state.windows.find(w => w.id == id);
+    windowToMaximize.status = "maximized";
+  }),
+  unmaximizeWindow : action((state, payload) => {
+    const {id} = payload;
+    const windowToUnmaximize = state.windows.find(w => w.id == id);
+    windowToUnmaximize.status = "free";
   }),
   minimizeWindow : action((state, payload) => {
     const {id} = payload;
