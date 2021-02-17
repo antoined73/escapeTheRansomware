@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import TaskBar from '../../components/taskbar/taskbar-component';
 import './main-layout.css'
 import Window from '../../components/generics/window/window-component'
+import Login from '../../components/login/login-component'
 
 import { useDrop } from 'react-dnd';
 const MainLayout = ({children}) => {
@@ -87,7 +88,10 @@ const MainLayout = ({children}) => {
           const { left, top, height, width, title, id, focused, status } = window;
 
           return (
+            <div>
+            <Login></Login>
             <Window key={id} id={id} title={title} left={left} top={top} height={height} width={width} maximized={status=="maximized"} active={focused} onClose={() => {deleteWindow(id);}} onMinimize={() => {minimizeWindow(id); }} onMaximize={ () => { setWindowFocused(id); } }>hello</Window>
+            </div>
           );
         })}
       </div>
