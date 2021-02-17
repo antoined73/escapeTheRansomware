@@ -14,7 +14,7 @@ import {
 import uniLogo from '../../assets/images/uni-logo.svg';
 import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
 
-const TaskBar = ({ height }) => {
+const TaskBar = ({ height, windows }) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState();
 
@@ -78,6 +78,17 @@ const TaskBar = ({ height }) => {
                 </ListItem>
               </List>
             )}
+
+            {windows
+              .sort((a, b) => {
+                // tri des fenetres dans l'ordre de leur id
+                return a.id - b.id;
+              })
+              .map(window => {
+                // affichage des boutons dans la barre des taches
+                const { title, id, focused } = window;
+                return (<Button id={id}>{title}</Button>);
+              })}
           </div>
 
           <div className="is-flex ml-5 is-align-items-center" style={{ height: '100%' }}>
