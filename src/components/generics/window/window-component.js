@@ -11,10 +11,10 @@ import './window-component.css'
 import { useDrag } from 'react-dnd'
 // import Rnd from 'react-rnd';
 
-const Window = ({id, left, top, height=150, width=250, 
+const Window = ({id, position, height=150, width=250, 
 title="", children, footerContent, 
 maximized=false, active=false, resizable=true,
-onClose, onMaximize, onMinimize}) => {
+onClick, onClose, onMaximize, onMinimize}) => {
 
   const [isMaximized, setIsMaximized] = useState(maximized);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -23,8 +23,8 @@ onClose, onMaximize, onMinimize}) => {
   const currentHeight = isMaximized? "100%" : height;
   const currentWidth = isMaximized? "100%" : width;
 
-  const currentTop = isMaximized? 0 : top;
-  const currentLeft = isMaximized? 0 : left;
+  const posY = isMaximized? 0 : position.y;
+  const posX = isMaximized? 0 : position.x;
 
   const onButtonMinimize = () => {
     setIsMinimized(true);
@@ -41,7 +41,7 @@ onClose, onMaximize, onMinimize}) => {
   }
 
   const [{ isDragging }, dragRef, previewRef] = useDrag({
-    item: { id, left, top, type: "window"},
+    item: { id, x : position.x, y: position.y, type: "window"},
     previewOptions: {},
     canDrag: !isMaximized,
     collect: (monitor) => ({
@@ -50,7 +50,7 @@ onClose, onMaximize, onMinimize}) => {
   })
 
   return (
-    <W ref={previewRef} resizable={resizable} className='window' style={{ height: currentHeight, width: currentWidth, position: 'absolute', top:currentTop, left:currentLeft, display: isMinimized||isClosed&& 'none'}}>
+    <W onClick={onClick} ref={previewRef} resizable={resizable} className='window' style={{ height: currentHeight, width: currentWidth, position: 'absolute', top:posY, left:posX, display: isMinimized||isClosed&& 'none'}}>
       <WindowHeader ref={dragRef} active={active} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
         <span className="windowTitle">{title}</span>
         <div className='is-flex is-justify-content-space-between is-align-items-center'>

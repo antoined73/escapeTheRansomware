@@ -13,11 +13,14 @@ import {
 } from 'react95';
 import uniLogo from '../../assets/images/uni-logo.svg';
 import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
-const TaskBar = ({ height, windows }) => {
+const TaskBar = ({ height }) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState();
 
+  const windows = useStoreState((state) => state.windows.windows);
+  
   useEffect(() => {
     // set up a function to properly format the time
     function doDate() {
@@ -31,66 +34,89 @@ const TaskBar = ({ height, windows }) => {
     setInterval(doDate, 1000);
   }, []);
 
+  const displayStartButton = () => {
+    return (
+    <>
+    <Button
+      onClick={() => setOpen(!open)}
+      active={open}
+      style={{ fontWeight: 'bold' }}
+    >
+      <img
+        src={uniLogo}
+        alt='react95 logo'
+        style={{ height: '20px', marginRight: 4 }}
+      />
+        Start
+    </Button>
+    {open && (
+      <List
+        style={{
+          position: 'absolute',
+          left: '0',
+          bottom: '100%'
+        }}
+        onClick={() => setOpen(false)}
+      >
+        <ListItem>
+          <span role='img' aria-label='👨‍💻'>
+            👨‍💻
+            </span>
+            Profile
+        </ListItem>
+        <ListItem>
+          <span role='img' aria-label='📁'>
+            📁
+            </span>
+            My account
+        </ListItem>
+        <Divider />
+        <ListItem disabled>
+          <span role='img' aria-label='🔙'>
+            🔙
+            </span>
+            Logout
+        </ListItem>
+      </List>
+    )}
+    </>);
+  }
+
+  const { toggleMinimize_sa, moveWindow_sa, minimizeWindow_sa, unminimizeWindow_sa, deleteWindow_sa } = useStoreActions(actions => ({
+    toggleMinimize_sa: actions.windows.toggleMinimize,
+    moveWindow_sa: actions.windows.moveWindow,
+    minimizeWindow_sa: actions.windows.minimizeWindow,
+    unminimizeWindow_sa : actions.windows.unminimizeWindow,
+    deleteWindow_sa: actions.windows.deleteWindow,
+  }));
+
+  const displayWindowsTabs = () => {
+    return (<div className="is-flex ml-5 is-align-items-center">
+      {windows
+      .sort((a, b) => {
+        // tri des fenetres dans l'ordre de leur id
+        return a.id - b.id;
+      })
+      .map(window => {
+        // affichage des boutons dans la barre des taches
+        const { title, id, focused } = window;
+        return (
+        <Button key={id} id={id} 
+        onClick={() => { toggleMinimize_sa({id}) }}
+        active={window.status=="free"?true:false }>
+          <span style={{width: 100, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}>{title}</span>
+        </Button>);
+      })}
+    </div>);
+  }
   return (
     <Fragment>
       <AppBar className="TaskBar" style={{ height: height }}>
         <Toolbar className="Toolbar is-flex is-justify-content-space-between is-align-items-center">
           <div className="is-flex is-align-items-flex-start">
-            <Button
-              onClick={() => setOpen(!open)}
-              active={open}
-              style={{ fontWeight: 'bold' }}
-            >
-              <img
-                src={uniLogo}
-                alt='react95 logo'
-                style={{ height: '20px', marginRight: 4 }}
-              />
-                Start
-            </Button>
-            {open && (
-              <List
-                style={{
-                  position: 'absolute',
-                  left: '0',
-                  bottom: '100%'
-                }}
-                onClick={() => setOpen(false)}
-              >
-                <ListItem>
-                  <span role='img' aria-label='👨‍💻'>
-                    👨‍💻
-                    </span>
-                    Profile
-                </ListItem>
-                <ListItem>
-                  <span role='img' aria-label='📁'>
-                    📁
-                    </span>
-                    My account
-                </ListItem>
-                <Divider />
-                <ListItem disabled>
-                  <span role='img' aria-label='🔙'>
-                    🔙
-                    </span>
-                    Logout
-                </ListItem>
-              </List>
-            )}
+            {displayStartButton()}
 
-            <div className="is-flex ml-5 is-align-items-center">
-              {windows
-              .sort((a, b) => {
-                // tri des fenetres dans l'ordre de leur id
-                return a.id - b.id;
-              })
-              .map(window => {
-                // affichage des boutons dans la barre des taches
-                const { title, id, focused } = window;
-                return (<Button key={id} id={id}><span style={{width: 100, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}>{title}</span></Button>);
-              })}
-            </div>
+            {displayWindowsTabs()}
           </div>
 
           <div className="is-flex ml-5 is-align-items-center" style={{ height: '100%' }}>
