@@ -77,6 +77,7 @@ const Window = ({
       minHeight={120}
       minWidth={120}
       disableDragging={maximized}
+      enableResizing={!maximized}
     >
       <W onClick={onClick} resizable={resizable} className='window' style={{ height: "100%", width: "100%", display: isMinimized||isClosed&& 'none'}}>
         <WindowHeader active={active} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
