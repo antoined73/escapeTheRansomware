@@ -43,6 +43,7 @@ const Window = ({
   }
 
   const onButtonClose = () => {
+    setIsClosed(true);
     onClose();
   }
 
@@ -62,14 +63,13 @@ const Window = ({
     resizeWindow_sa({id, width:w, height:h });
   }
 
-  console.log(maximized)
-
   return (
     <Rnd
       size={{ width: currentWidth,  height: currentHeight }}
       position={{ x: posX, y: posY }}
       dragHandleClassName="window-header"
       onDragStop={(e, d) => { moveWindow(d.x, d.y) }}
+      onDragStart={(e, d) => { onClick(); }}
       onResizeStop={(e, direction, ref, delta, position) => {
         resizeWindow(ref.style.width, ref.style.height);
         moveWindow(position.x, position.y);
@@ -80,7 +80,7 @@ const Window = ({
     >
       <W onClick={onClick} resizable={resizable} className='window' style={{ height: "100%", width: "100%", display: isMinimized||isClosed&& 'none'}}>
         <WindowHeader active={active} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
-          <span className="windowTitle">{title}</span>
+          <span className="windowTitle is-unselectable">{title}</span>
           <div className='is-flex is-justify-content-space-between is-align-items-center'>
             <Button onClick={onButtonMinimize}>
               <span className='minimize-icon'>&#9644;</span>
