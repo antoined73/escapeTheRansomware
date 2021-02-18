@@ -7,7 +7,7 @@ import {
 
 import anime from 'animejs/lib/anime.es.js';
 
-const Counter = ({value=0, logo, minLength=4, digitSize='sm', color='red', animate=false}) => {
+const Counter = ({value=0, logo, minLength=4, digitSize='sm', color='red', animate=false, onClick}) => {
 
   if(animate){
     anime({
@@ -21,7 +21,7 @@ const Counter = ({value=0, logo, minLength=4, digitSize='sm', color='red', anima
   }
 
   return (
-    <Panel variant='well' className="is-flex is-align-items-center p-1 mx-2 counter has-background-black">
+    <Panel onClick={onClick} variant='well' className="is-flex is-align-items-center p-1 mx-2 counter has-background-black is-clickable">
       <div className={`has-background-black innerCounter ${color}`}>
         <div className="counterWrapper">
           <C value={value} minLength={minLength} size={digitSize} className="counter95_override"/>

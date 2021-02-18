@@ -1,84 +1,12 @@
 import { action, computed, thunk } from "easy-peasy";
+import { createWindow } from '../../utils/window-utils'
+import { clampPosition } from '../../utils/position-utils'
 
 const initialState = {
   windows: [
-    {
-      id: 0,
-      position : { x: 20, y: 80 },
-      height: 500,
-      width: 450,
-      title: 'Drag me around',
-      status: "maximized",
-      focused: false
-    },
-    {
-      id: 1,
-      position : { x: 180, y: 80 },
-      height: 250,
-      width: 200,
-      title: 'Drag me too', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 2,
-      position : { x: 180, y: 400 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 1', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 3,
-      position : { x: 50, y: 20 },
-      height: 150,
-      width: 600,
-      title: 'Drag me too 2', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 4,
-      position : { x: 180, y: 600 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 3', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 5,
-      position : { x: 500, y: 20 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 4', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 6,
-      position : { x: 800, y: 50 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 5', 
-      status: "free",
-      focused: true
-    }
+    createWindow('Drag me', false),
+    createWindow('Fullscreen test', true),
   ]
-}
-
-const marginOnEdges = {
-  left: 0,
-  right: 100,
-  top: 0,
-  bottom: 100
-};
-// Control min and max position of window in defined zone using real browser window inner size
-const clampPosition = (position) => {
-  position.x = Math.max(marginOnEdges.left, Math.min(position.x, window.innerWidth-marginOnEdges.right));
-  position.y = Math.max(marginOnEdges.top, Math.min(position.y, window.innerHeight-marginOnEdges.bottom));
-  return position;
 }
 
 const windowsModel = {
@@ -147,6 +75,21 @@ const windowsModel = {
     const {id} = payload;
     const newWindows = [ ...state.windows.filter(w => w.id != id) ];
     state.windows = newWindows;
+  }),
+  createWindow: action((state, payload) => {
+    const {title, maximized} = payload;
+    const newWindow = createWindow(title, maximized);
+    state.windows.push(newWindow);
+  }),
+  showWindow: thunk((actions, payload, {getState}) => {
+    const {title, maximized} = payload;
+    const existingWindow = getState().windows.find(w => w.title==title);
+    if(!existingWindow) {
+      actions.createWindow({title, maximized});
+      const newWindow = getState().windows.find(w => w.title==title);
+      actions.focusWindow({id: newWindow.id});
+    }
+    else actions.focusWindow({id: existingWindow.id});
   }),
 };
 

@@ -82,12 +82,9 @@ const TaskBar = ({ height }) => {
     </>);
   }
 
-  const { toggleMinimize_sa, moveWindow_sa, minimizeWindow_sa, unminimizeWindow_sa, deleteWindow_sa } = useStoreActions(actions => ({
+  const { toggleMinimize_sa, showWindow_sa } = useStoreActions(actions => ({
     toggleMinimize_sa: actions.windows.toggleMinimize,
-    moveWindow_sa: actions.windows.moveWindow,
-    minimizeWindow_sa: actions.windows.minimizeWindow,
-    unminimizeWindow_sa : actions.windows.unminimizeWindow,
-    deleteWindow_sa: actions.windows.deleteWindow,
+    showWindow_sa: actions.windows.showWindow,
   }));
 
   const displayWindowsTabs = () => {
@@ -120,7 +117,7 @@ const TaskBar = ({ height }) => {
           </div>
 
           <div className="is-flex ml-5 is-align-items-center" style={{ height: '100%' }}>
-            <PolypointsCounter />
+            <PolypointsCounter onClick={()=>{ console.log("show"); showWindow_sa({title:"Polypoints", maximized: true}); }}/>
             <Bar size={35} />
             <Panel variant='well' className="ml-2 py-1 px-5">
               {date}
