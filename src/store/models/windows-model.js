@@ -68,6 +68,19 @@ const initialState = {
   ]
 }
 
+const marginOnEdges = {
+  left: 0,
+  right: 100,
+  top: 0,
+  bottom: 100
+};
+// Control min and max position of window in defined zone using real browser window inner size
+const clampPosition = (position) => {
+  position.x = Math.max(marginOnEdges.left, Math.min(position.x, window.innerWidth-marginOnEdges.right));
+  position.y = Math.max(marginOnEdges.top, Math.min(position.y, window.innerHeight-marginOnEdges.bottom));
+  return position;
+}
+
 const windowsModel = {
   ...initialState,
   displayedWindows : computed((state) => state.windows.filter(w => w.status!=="minimized")),
@@ -78,7 +91,7 @@ const windowsModel = {
     const windowToMove = state.windows.find(w => w.id === id);
     if(!windowToMove) return;
 
-    windowToMove.position = position;
+    windowToMove.position = clampPosition(position);
     actions.focusWindow({id});
   }),
   resizeWindow: thunk((actions, payload, {getState}) => {
