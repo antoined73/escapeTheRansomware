@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createWindow, WindowDisplayStatus } from '../../../utils/window-utils'
 import {
   Window as W,
   WindowContent,
@@ -8,52 +9,56 @@ import {
   Cutout
 } from 'react95';
 import './window-component.css'
-import { useDrag } from 'react-dnd'
 import { Rnd } from 'react-rnd';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
-const Window = ({
-  id, 
-  position, height=150, width=250, 
-  title="", children, footerContent, 
-  maximized=false, active=false, resizable=true,
+const Window = ({id, 
+  children, footerContent, 
+  resizable=true,
   onClick, onClose, onMaximize, onMinimize
   }) => {
 
-  const [isMaximized, setIsMaximized] = useState(maximized);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [isClosed, setIsClosed] = useState(false);
+  const windows = useStoreState((state) => state.windows);
+  const window = windows.byId[id];
 
-  const currentHeight = isMaximized? "100%" : height;
-  const currentWidth = isMaximized? "100%" : width;
+  const isMaximized = window.status===WindowDisplayStatus.MAXIMIZED;
+  const isMinimized = window.isMinimized;
 
-  const posY = isMaximized? 0 : position.y;
-  const posX = isMaximized? 0 : position.x;
+  const currentHeight = isMaximized? "100%" : window.height;
+  const currentWidth = isMaximized? "100%" : window.width;
 
-  const onButtonMinimize = () => {
-    setIsMinimized(true);
-    onMinimize();
-  }
+  const posY = isMaximized? 0 : window.position.y;
+  const posX = isMaximized? 0 : window.position.x;
 
-  const onButtonMaximize = () => {
-    setIsMaximized(!isMaximized);
-    if(isMaximized) unmaximizeWindow_sa({id});
-    else maximizeWindow_sa({id});
-    onMaximize();
-  }
-
-  const onButtonClose = () => {
-    setIsClosed(true);
-    onClose();
-  }
-
-  const { focusWindow_sa, moveWindow_sa, resizeWindow_sa, unmaximizeWindow_sa, maximizeWindow_sa } = useStoreActions(actions => ({
+  const { focusWindow_sa, moveWindow_sa, resizeWindow_sa, unmaximizeWindow_sa, maximizeWindow_sa, minimizeWindow_sa, deleteWindow_sa } = useStoreActions(actions => ({
     focusWindow_sa: actions.windows.focusWindow,
     moveWindow_sa: actions.windows.moveWindow,
     resizeWindow_sa: actions.windows.resizeWindow,
     unmaximizeWindow_sa : actions.windows.unmaximizeWindow,
     maximizeWindow_sa: actions.windows.maximizeWindow,
+    minimizeWindow_sa: actions.windows.minimizeWindow,
+    deleteWindow_sa: actions.windows.deleteWindow,
   }));
+
+  const onButtonMinimize = () => {
+    minimizeWindow_sa({id})
+    onMinimize && onMinimize();
+  }
+
+  const onButtonMaximize = () => {
+    if(isMaximized) unmaximizeWindow_sa({id});
+    else maximizeWindow_sa({id});
+    onMaximize && onMaximize();
+  }
+
+  const onButtonClose = () => {
+    deleteWindow_sa({id});
+    onClose && onClose();
+  }
+
+  const onWindowClick = (event) => {
+    focusWindow_sa({id});
+  }
 
   const moveWindow = (x, y) => {
     moveWindow_sa({id, position: {x, y} });
@@ -69,19 +74,19 @@ const Window = ({
       position={{ x: posX, y: posY }}
       dragHandleClassName="window-header"
       onDragStop={(e, d) => { moveWindow(d.x, d.y) }}
-      onDragStart={(e, d) => { onClick(); }}
+      onDragStart={(e, d) => { onWindowClick(); }}
       onResizeStop={(e, direction, ref, delta, position) => {
         resizeWindow(ref.style.width, ref.style.height);
         moveWindow(position.x, position.y);
       }}
       minHeight={120}
       minWidth={120}
-      disableDragging={maximized}
-      enableResizing={!maximized}
+      disableDragging={isMaximized}
+      enableResizing={!isMaximized}
     >
-      <W onClick={onClick} resizable={resizable} className='window' style={{ height: "100%", width: "100%", display: isMinimized||isClosed&& 'none'}}>
-        <WindowHeader active={active} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
-          <span className="windowTitle is-unselectable">{title}</span>
+      <W onClick={onWindowClick} resizable={resizable} className='window' style={{ height: "100%", width: "100%", display: isMinimized && 'none'}}>
+        <WindowHeader active={window.isFocused} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
+          <span className="windowTitle is-unselectable">{window.title}</span>
           <div className='is-flex is-justify-content-space-between is-align-items-center'>
             <Button onClick={onButtonMinimize}>
               <span className='minimize-icon'>&#9644;</span>

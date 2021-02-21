@@ -19,7 +19,7 @@ const TaskBar = ({ height }) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState();
 
-  const windows = useStoreState((state) => state.windows.windows);
+  const windows = useStoreState((state) => state.windows.all);
   
   useEffect(() => {
     // set up a function to properly format the time
@@ -96,11 +96,11 @@ const TaskBar = ({ height }) => {
       })
       .map(window => {
         // affichage des boutons dans la barre des taches
-        const { title, id, focused } = window;
+        const { title, id, isFocused, isMinimized } = window;
         return (
         <Button key={id} id={id} 
         onClick={() => { toggleMinimize_sa({id}) }}
-        active={window.status!=="minimized"}>
+        active={!isMinimized}>
           <span style={{width: 100, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}>{title}</span>
         </Button>);
       })}

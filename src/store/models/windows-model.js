@@ -1,22 +1,21 @@
 import { action, computed, thunk } from "easy-peasy";
-import { createWindow } from '../../utils/window-utils'
+import { createWindow, WindowDisplayStatus } from '../../utils/window-utils'
 import { clampPosition } from '../../utils/position-utils'
 
 const initialState = {
-  windows: [
-    createWindow('Drag me', false),
-    createWindow('Fullscreen test', true),
-  ]
+  byId: {},
+  allIds: []
 }
 
 const windowsModel = {
   ...initialState,
-  displayedWindows : computed((state) => state.windows.filter(w => w.status!=="minimized")),
+  all : computed((state) => Object.values(state.byId)),
+  displayedWindows : computed((state) => state.all.filter(w => !w.isMinimized)),
   moveWindow : thunk((actions, payload, {getState}) => {
     const { id, position } = payload;
     const state = getState();
 
-    const windowToMove = state.windows.find(w => w.id === id);
+    const windowToMove = state.byId[id];
     if(!windowToMove) return;
 
     windowToMove.position = clampPosition(position);
@@ -26,70 +25,68 @@ const windowsModel = {
     const { id, width, height } = payload;
     const state = getState();
 
-    const windowToMove = state.windows.find(w => w.id === id);
-    if(!windowToMove) return;
+    const windowToResize = state.byId[id];
+    if(!windowToResize) return;
 
-    windowToMove.width = width;
-    windowToMove.height = height;
+    windowToResize.width = width;
+    windowToResize.height = height;
     actions.focusWindow({id});
   }),
   focusWindow : action((state, payload) => {
     const {id} = payload;
 
-    const newWindows = [ ...state.windows.map(w => { w.focused = false; return w; }) ];
-    const windowToMove = newWindows.find(w => w.id == id);
-    if(!windowToMove) return;
+    const windowToFocus = state.byId[id];
+    if(!windowToFocus) return;
 
-    windowToMove.focused = true;
-    const index = newWindows.indexOf(windowToMove);
-    if(index != newWindows.length-1) newWindows.push(newWindows.splice(index, 1)[0]); // reorder to top
-    state.windows = newWindows;
+    windowToFocus.focused = true;
+    state.allIds.push(state.allIds.splice(state.allIds.indexOf(id), 1)[0]);
   }),
   maximizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToMaximize = state.windows.find(w => w.id == id);
-    windowToMaximize.status = "maximized";
+    const windowToMaximize = state.byId[id];
+    windowToMaximize.status = WindowDisplayStatus.MAXIMIZED;
   }),
   unmaximizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToUnmaximize = state.windows.find(w => w.id == id);
-    windowToUnmaximize.status = "free";
+    const windowToUnmaximize = state.byId[id];
+    windowToUnmaximize.status = WindowDisplayStatus.FREE;
   }),
   minimizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToMinimize = state.windows.find(w => w.id == id);
-    windowToMinimize.status = "minimized";
+    const windowToMinimize = state.byId[id];
+    windowToMinimize.isMinimized = true;
   }),
   unminimizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToUnminimize = state.windows.find(w => w.id == id);
-    windowToUnminimize.status = "free";
+    const windowToUnminimize = state.byId[id];
+    windowToUnminimize.isMinimized = false;
   }),
   toggleMinimize: thunk((actions, payload, {getState}) => {
     const {id} = payload;
-    const windowToToggle = getState().windows.find(w => w.id == id);
-    if(windowToToggle.status=="free") actions.minimizeWindow({id});
-    else actions.unminimizeWindow({id});
+    const windowToToggle = getState().byId[id];
+    if(windowToToggle.isMinimized) actions.unminimizeWindow({id});
+    else actions.minimizeWindow({id});
   }),
   deleteWindow : action((state, payload) => {
     const {id} = payload;
-    const newWindows = [ ...state.windows.filter(w => w.id != id) ];
-    state.windows = newWindows;
+    state.allIds.splice(state.allIds.indexOf(id), 1);
+    delete state.byId[id];
   }),
   createWindow: action((state, payload) => {
     const {title, maximized} = payload;
     const newWindow = createWindow(title, maximized);
-    state.windows.push(newWindow);
+    state.byId[newWindow.id] = newWindow;
+    state.allIds.push(newWindow.id);
   }),
   showWindow: thunk((actions, payload, {getState}) => {
     const {title, maximized} = payload;
-    const existingWindow = getState().windows.find(w => w.title==title);
-    if(!existingWindow) {
+    let windowToShow = getState().all.find(w => w.title==title);
+    if(!windowToShow) {
       actions.createWindow({title, maximized});
-      const newWindow = getState().windows.find(w => w.title==title);
-      actions.focusWindow({id: newWindow.id});
+      windowToShow = getState().all.find(w => w.title==title);
     }
-    else actions.focusWindow({id: existingWindow.id});
+    actions.focusWindow({id: windowToShow.id});
+    actions.unminimizeWindow({id: windowToShow.id});
   }),
 };
 
