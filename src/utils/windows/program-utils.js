@@ -1,4 +1,4 @@
-import { WindowDisplayStatus } from './windows/display_status'
+import { WindowDisplayStatus } from './display_status'
 
 export const Programs = {
   POLYPOINTS: 0,

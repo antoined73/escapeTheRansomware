@@ -6,7 +6,6 @@ import {
 } from 'react95';
 
 import anime from 'animejs/lib/anime.es.js';
-import { v4 as uuidv4 } from 'uuid';
 
 
 const Counter = ({value=0, logo, minLength=4, digitSize='sm', color='red', animate=false, onClick}) => {

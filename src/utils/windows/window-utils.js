@@ -1,7 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
-import { getMediumSize, getMiddlePosition } from '../position-utils'
-import { WindowProgramIdToWindowTemplate } from '../program-utils'
+import { getMediumSize, getMiddlePosition } from './position-utils'
+import { WindowProgramIdToWindowTemplate } from './program-utils'
 import { WindowDisplayStatus } from './display_status'
 
 

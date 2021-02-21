@@ -2,8 +2,10 @@ import React, { Fragment, useState } from 'react';
 import TaskBar from '../../components/taskbar/taskbar-component';
 import './main-layout.css'
 import WindowsLayout from '../windows/windows-layout'
+import PayRansomEndingLayout from '../screens/pay_ransom_ending-layout'
+import { useStoreState } from 'easy-peasy';
+import { Screens } from "../../utils/screens/screen-utils";
 
-import { useDrop } from 'react-dnd';
 const MainLayout = ({children}) => {
   const taskBarHeight = 48;
 
@@ -27,14 +29,35 @@ const MainLayout = ({children}) => {
     return result;
   }
 
-  return (
+  const screenIdToComponentMap = {};
+  screenIdToComponentMap[Screens.LOGIN] = <div>LOGIN</div>;
+  screenIdToComponentMap[Screens.PAY_RANSOM_ENDING] = <PayRansomEndingLayout/>;
+  const displayedScreen = useStoreState(store => store.screens.displayedScreen);
+  const fullscreenViews = () => {
+    console.log(displayedScreen)
+    return (
+      displayedScreen && <div className="fullscreenLayout is-flex">
+      {screenIdToComponentMap[displayedScreen.id]}
+    </div>
+    );
+  }
+
+  const desktopView = () => {
+    return (
     <div className="mainLayout is-flex">
       <div className="mainScreen" style={{marginBottom: taskBarHeight}}>
-        {/* {displayGrid(10,15)} */}
         <WindowsLayout/>
       </div>
       <TaskBar height={taskBarHeight}/>
     </div>
+    );
+  }
+
+  return (
+    <>
+      {desktopView()}
+      {fullscreenViews()}
+    </>
   );
 }
 

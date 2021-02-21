@@ -1,7 +1,7 @@
 import { action, computed, thunk } from "easy-peasy";
 import { createProgramWindow } from '../../utils/windows/window-utils'
 import { WindowDisplayStatus } from '../../utils/windows/display_status'
-import { clampPosition } from '../../utils/position-utils'
+import { clampPosition } from '../../utils/windows/position-utils'
 
 const initialState = {
   byId: {},

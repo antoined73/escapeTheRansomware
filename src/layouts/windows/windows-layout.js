@@ -3,7 +3,7 @@ import Window from '../../components/generics/window/window-component'
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import './windows-layout.css'
 import PolpointsWC from '../../components/window_contents/polypoints_wc-component'
-import { Programs } from '../../utils/program-utils'
+import { Programs } from '../../utils/windows/program-utils'
 
 const WindowsLayout = () => {
   const windows = useStoreState((state) => state.windows.displayedWindows);

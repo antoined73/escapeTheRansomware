@@ -9,11 +9,19 @@ import {
 } from 'react95';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
-
+import { Screens } from '../../utils/screens/screen-utils'
 const PolpointsWC = ({id}) => {
 
   const polypointsLeftToPayRansom = useStoreState((state) => state.player.polypointsLeftToPayRansom);
   const canPayRansom = useStoreState((state) => state.player.canPayRansom);
+
+  
+  const { openScreen_sa } = useStoreActions(actions => ({
+    openScreen_sa: actions.screens.openScreen
+  }));
+  const openEndScreen = () => {
+    openScreen_sa({id: Screens.PAY_RANSOM_ENDING})
+  }
 
   return (
     <div className="is-flex is-flex-direction-column">
@@ -33,7 +41,7 @@ const PolpointsWC = ({id}) => {
         more polypoints to get all your files back.
       </div>
       <div className="is-flex mt-5 has-text-centered is-align-items-center is-justify-content-center">
-        <Button size='lg' disabled={!canPayRansom}>Pay and get my files back</Button>
+        <Button size='lg' disabled={!canPayRansom} onClick={openEndScreen}>Pay and get my files back</Button>
       </div>
     </div>
   );

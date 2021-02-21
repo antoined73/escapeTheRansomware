@@ -14,7 +14,7 @@ import {
 import uniLogo from '../../assets/images/uni-logo.svg';
 import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
 import { useStoreState, useStoreActions } from 'easy-peasy';
-import { Programs } from '../../utils/program-utils';
+import { Programs } from '../../utils/windows/program-utils';
 
 const TaskBar = ({ height }) => {
   const [open, setOpen] = React.useState(false);
