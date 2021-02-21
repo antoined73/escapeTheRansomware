@@ -14,6 +14,7 @@ import {
 import uniLogo from '../../assets/images/uni-logo.svg';
 import PolypointsCounter from '../polypoints_counter/polypoints_counter-component';
 import { useStoreState, useStoreActions } from 'easy-peasy';
+import { Programs } from '../../utils/program-utils';
 
 const TaskBar = ({ height }) => {
   const [open, setOpen] = React.useState(false);
@@ -87,6 +88,10 @@ const TaskBar = ({ height }) => {
     showWindow_sa: actions.windows.showWindow,
   }));
 
+  const onPolypointsCounterClicked = () => {
+    showWindow_sa({programId:Programs.POLYPOINTS, maximized: false});
+  }
+
   const displayWindowsTabs = () => {
     return (<div className="is-flex ml-5 is-align-items-center">
       {windows
@@ -117,7 +122,7 @@ const TaskBar = ({ height }) => {
           </div>
 
           <div className="is-flex ml-5 is-align-items-center" style={{ height: '100%' }}>
-            <PolypointsCounter onClick={()=>{ console.log("show"); showWindow_sa({title:"Polypoints", maximized: true}); }}/>
+            <PolypointsCounter onClick={onPolypointsCounterClicked}/>
             <Bar size={35} />
             <Panel variant='well' className="ml-2 py-1 px-5">
               {date}

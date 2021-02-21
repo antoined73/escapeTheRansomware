@@ -1,5 +1,6 @@
 import { action, computed, thunk } from "easy-peasy";
-import { createWindow, WindowDisplayStatus } from '../../utils/window-utils'
+import { createProgramWindow } from '../../utils/windows/window-utils'
+import { WindowDisplayStatus } from '../../utils/windows/display_status'
 import { clampPosition } from '../../utils/position-utils'
 
 const initialState = {
@@ -73,17 +74,17 @@ const windowsModel = {
     delete state.byId[id];
   }),
   createWindow: action((state, payload) => {
-    const {title, maximized} = payload;
-    const newWindow = createWindow(title, maximized);
+    const {programId, maximized} = payload;
+    const newWindow = createProgramWindow(programId, maximized);
     state.byId[newWindow.id] = newWindow;
     state.allIds.push(newWindow.id);
   }),
   showWindow: thunk((actions, payload, {getState}) => {
-    const {title, maximized} = payload;
-    let windowToShow = getState().all.find(w => w.title==title);
+    const {programId, maximized} = payload;
+    let windowToShow = getState().all.find(w => w.programId === programId);
     if(!windowToShow) {
-      actions.createWindow({title, maximized});
-      windowToShow = getState().all.find(w => w.title==title);
+      actions.createWindow({programId, maximized});
+      windowToShow = getState().all.find(w =>  w.programId === programId);
     }
     actions.focusWindow({id: windowToShow.id});
     actions.unminimizeWindow({id: windowToShow.id});

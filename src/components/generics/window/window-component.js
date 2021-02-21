@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createWindow, WindowDisplayStatus } from '../../../utils/window-utils'
+import { WindowDisplayStatus } from '../../../utils/windows/display_status'
 import {
   Window as W,
   WindowContent,
@@ -14,7 +14,6 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 const Window = ({id, 
   children, footerContent, 
-  resizable=true,
   onClick, onClose, onMaximize, onMinimize
   }) => {
 
@@ -82,9 +81,9 @@ const Window = ({id,
       minHeight={120}
       minWidth={120}
       disableDragging={isMaximized}
-      enableResizing={!isMaximized}
+      enableResizing={!isMaximized && window.resizable}
     >
-      <W onClick={onWindowClick} resizable={resizable} className='window' style={{ height: "100%", width: "100%", display: isMinimized && 'none'}}>
+      <W onClick={onWindowClick} resizable={window.resizable} className='window' style={{ height: "100%", width: "100%", display: isMinimized && 'none'}}>
         <WindowHeader active={window.isFocused} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
           <span className="windowTitle is-unselectable">{window.title}</span>
           <div className='is-flex is-justify-content-space-between is-align-items-center'>
