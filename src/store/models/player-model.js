@@ -1,3 +1,4 @@
+import { computed } from 'easy-peasy';
 import Cookies from 'js-cookie';
 
 const getInitPolypoints = () => {
@@ -14,7 +15,9 @@ const initialState = {
 }
 
 const playerModel = {
-  ...initialState
+  ...initialState,
+  polypointsLeftToPayRansom: computed(state => Math.max(0, state.ransom-state.polypoints)),
+  canPayRansom: computed(state => state.polypointsLeftToPayRansom  <= 0),
 };
 
 export default playerModel;

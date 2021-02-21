@@ -1,94 +1,22 @@
 import { action, computed, thunk } from "easy-peasy";
+import { createProgramWindow } from '../../utils/windows/window-utils'
+import { WindowDisplayStatus } from '../../utils/windows/display_status'
+import { clampPosition } from '../../utils/windows/position-utils'
 
 const initialState = {
-  windows: [
-    {
-      id: 0,
-      position : { x: 20, y: 80 },
-      height: 500,
-      width: 450,
-      title: 'Drag me around',
-      status: "maximized",
-      focused: false
-    },
-    {
-      id: 1,
-      position : { x: 180, y: 80 },
-      height: 250,
-      width: 200,
-      title: 'Drag me too', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 2,
-      position : { x: 180, y: 400 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 1', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 3,
-      position : { x: 50, y: 20 },
-      height: 150,
-      width: 600,
-      title: 'Drag me too 2', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 4,
-      position : { x: 180, y: 600 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 3', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 5,
-      position : { x: 500, y: 20 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 4', 
-      status: "free",
-      focused: false
-    },
-    {
-      id: 6,
-      position : { x: 800, y: 50 },
-      height: 500,
-      width: 450,
-      title: 'Drag me too 5', 
-      status: "free",
-      focused: true
-    }
-  ]
-}
-
-const marginOnEdges = {
-  left: 0,
-  right: 100,
-  top: 0,
-  bottom: 100
-};
-// Control min and max position of window in defined zone using real browser window inner size
-const clampPosition = (position) => {
-  position.x = Math.max(marginOnEdges.left, Math.min(position.x, window.innerWidth-marginOnEdges.right));
-  position.y = Math.max(marginOnEdges.top, Math.min(position.y, window.innerHeight-marginOnEdges.bottom));
-  return position;
+  byId: {},
+  allIds: []
 }
 
 const windowsModel = {
   ...initialState,
-  displayedWindows : computed((state) => state.windows.filter(w => w.status!=="minimized")),
+  all : computed((state) => Object.values(state.byId)),
+  displayedWindows : computed((state) => state.all.filter(w => !w.isMinimized)),
   moveWindow : thunk((actions, payload, {getState}) => {
     const { id, position } = payload;
     const state = getState();
 
-    const windowToMove = state.windows.find(w => w.id === id);
+    const windowToMove = state.byId[id];
     if(!windowToMove) return;
 
     windowToMove.position = clampPosition(position);
@@ -98,55 +26,68 @@ const windowsModel = {
     const { id, width, height } = payload;
     const state = getState();
 
-    const windowToMove = state.windows.find(w => w.id === id);
-    if(!windowToMove) return;
+    const windowToResize = state.byId[id];
+    if(!windowToResize) return;
 
-    windowToMove.width = width;
-    windowToMove.height = height;
+    windowToResize.width = width;
+    windowToResize.height = height;
     actions.focusWindow({id});
   }),
   focusWindow : action((state, payload) => {
     const {id} = payload;
 
-    const newWindows = [ ...state.windows.map(w => { w.focused = false; return w; }) ];
-    const windowToMove = newWindows.find(w => w.id == id);
-    if(!windowToMove) return;
+    const windowToFocus = state.byId[id];
+    if(!windowToFocus) return;
 
-    windowToMove.focused = true;
-    const index = newWindows.indexOf(windowToMove);
-    if(index != newWindows.length-1) newWindows.push(newWindows.splice(index, 1)[0]); // reorder to top
-    state.windows = newWindows;
+    windowToFocus.focused = true;
+    state.allIds.push(state.allIds.splice(state.allIds.indexOf(id), 1)[0]);
   }),
   maximizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToMaximize = state.windows.find(w => w.id == id);
-    windowToMaximize.status = "maximized";
+    const windowToMaximize = state.byId[id];
+    windowToMaximize.status = WindowDisplayStatus.MAXIMIZED;
   }),
   unmaximizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToUnmaximize = state.windows.find(w => w.id == id);
-    windowToUnmaximize.status = "free";
+    const windowToUnmaximize = state.byId[id];
+    windowToUnmaximize.status = WindowDisplayStatus.FREE;
   }),
   minimizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToMinimize = state.windows.find(w => w.id == id);
-    windowToMinimize.status = "minimized";
+    const windowToMinimize = state.byId[id];
+    windowToMinimize.isMinimized = true;
   }),
   unminimizeWindow : action((state, payload) => {
     const {id} = payload;
-    const windowToUnminimize = state.windows.find(w => w.id == id);
-    windowToUnminimize.status = "free";
+    const windowToUnminimize = state.byId[id];
+    windowToUnminimize.isMinimized = false;
   }),
   toggleMinimize: thunk((actions, payload, {getState}) => {
     const {id} = payload;
-    const windowToToggle = getState().windows.find(w => w.id == id);
-    if(windowToToggle.status=="free") actions.minimizeWindow({id});
-    else actions.unminimizeWindow({id});
+    const windowToToggle = getState().byId[id];
+    if(windowToToggle.isMinimized) actions.unminimizeWindow({id});
+    else actions.minimizeWindow({id});
   }),
   deleteWindow : action((state, payload) => {
     const {id} = payload;
-    const newWindows = [ ...state.windows.filter(w => w.id != id) ];
-    state.windows = newWindows;
+    state.allIds.splice(state.allIds.indexOf(id), 1);
+    delete state.byId[id];
+  }),
+  createWindow: action((state, payload) => {
+    const {programId, maximized} = payload;
+    const newWindow = createProgramWindow(programId, maximized);
+    state.byId[newWindow.id] = newWindow;
+    state.allIds.push(newWindow.id);
+  }),
+  showWindow: thunk((actions, payload, {getState}) => {
+    const {programId, maximized} = payload;
+    let windowToShow = getState().all.find(w => w.programId === programId);
+    if(!windowToShow) {
+      actions.createWindow({programId, maximized});
+      windowToShow = getState().all.find(w =>  w.programId === programId);
+    }
+    actions.focusWindow({id: windowToShow.id});
+    actions.unminimizeWindow({id: windowToShow.id});
   }),
 };
 
