@@ -4,16 +4,18 @@ import {
   TextField,
   Tooltip
 } from 'react95';
-import { useStoreState } from 'easy-peasy';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import Cookies from 'js-cookie';
 import uniLogo from '../../assets/images/uni-logo.svg';
-import windowsModel from '../../store/models/windows-model';
-import { Programs } from '../../utils/windows/program-utils';
 
 const Login = () => {
 
   let login = useStoreState((state) => state.login);
   let password = useStoreState((state) => state.password);
+
+  const { deleteWindow_sa } = useStoreActions(actions => ({
+    deleteWindow_sa: actions.windows.deleteWindow
+  }));
 
   const setLogin = (e) => {
     Cookies.set('login', e.target.value);
@@ -26,8 +28,8 @@ const Login = () => {
   }
 
   const deleteWindow = () => {
-    windowsModel.deleteWindow(windowsModel.allIds, Programs.LOGIN);
-    
+    // Rajouter l'id ici pour que ça marche
+    deleteWindow_sa();
   }
 
   return (
