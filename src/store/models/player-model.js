@@ -9,9 +9,30 @@ const getInitPolypoints = () => {
     return 0;
   }
 }
+
+const getInitLogin = () => {
+  let result = Cookies.get('login');
+  if(result) return result;
+  else {
+    Cookies.set('login', '');
+    return '';
+  }
+}
+
+const getInitPassword = () => {
+  let result = Cookies.get('password');
+  if(result) return result;
+  else {
+    Cookies.set('password', '');
+    return '';
+  }
+}
+
 const initialState = {
   ransom: 9000,
-  polypoints: getInitPolypoints()
+  polypoints: getInitPolypoints(),
+  login: getInitLogin(),
+  password: getInitPassword()
 }
 
 const playerModel = {
