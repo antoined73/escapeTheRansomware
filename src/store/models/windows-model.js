@@ -74,7 +74,10 @@ const windowsModel = {
     else actions.minimizeWindow({id});
   }),
   deleteWindow : action((state, payload) => {
+    // Même ici state.allIds et state.byId sont des tableaux "Proxy" (?) quand on les log. Ils ont l'air d'être vides. Je comprends R. Alèd.
+    console.log(payload);
     const {id} = payload;
+    console.log(id);
     state.allIds.splice(state.allIds.indexOf(id), 1);
     delete state.byId[id];
   }),
