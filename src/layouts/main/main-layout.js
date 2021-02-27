@@ -5,6 +5,7 @@ import WindowsLayout from '../windows/windows-layout'
 import PayRansomEndingLayout from '../screens/pay_ransom_ending-layout'
 import { useStoreState } from 'easy-peasy';
 import { Screens } from "../../utils/screens/screen-utils";
+import Login from '../../components/login/login-component';
 
 const MainLayout = ({children}) => {
   const taskBarHeight = 48;
@@ -30,7 +31,7 @@ const MainLayout = ({children}) => {
   }
 
   const screenIdToComponentMap = {};
-  screenIdToComponentMap[Screens.LOGIN] = <div>LOGIN</div>;
+  screenIdToComponentMap[Screens.LOGIN] = <Login/>;
   screenIdToComponentMap[Screens.PAY_RANSOM_ENDING] = <PayRansomEndingLayout/>;
   const displayedScreen = useStoreState(store => store.screens.displayedScreen);
   const fullscreenViews = () => {

@@ -13,7 +13,6 @@ const addScreen = (screenId) => {
   }
   initialState.byId[screenId] = screen;
   initialState.allIds.push(screenId);
-  console.log(initialState)
 }
 Object.values(Screens).forEach(screenId => addScreen(screenId));
 

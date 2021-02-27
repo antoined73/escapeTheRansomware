@@ -6,7 +6,7 @@ import { WindowDisplayStatus } from './display_status'
 
 
 export const createWindow = (programId, title, otherProps={}) => {
-  const { height, width, status, isMinimized, focused, position, resizable } = otherProps;
+  const { height, width, status, focused, position, isMinimized, minimizable, maximizable, closable, resizable } = otherProps;
   const size = getMediumSize();
   const h = height!=undefined? height : size.y;
   const w = width!=undefined? width : size.x;
@@ -18,9 +18,14 @@ export const createWindow = (programId, title, otherProps={}) => {
     width: w,
     title: title, 
     status: status!=undefined ? status : WindowDisplayStatus.FREE,
+
+    minimizable: minimizable!=undefined ? minimizable : true,
+    maximizable: maximizable!=undefined ? maximizable : true,
+    closable: closable!=undefined ? closable : true,
+    resizable: resizable!=undefined ? resizable : true,
+
     isMinimized: isMinimized!=undefined ? isMinimized : false,
     focused: focused!=undefined ? focused : true,
-    resizable: resizable!=undefined ? resizable : true,
     position : position!=undefined ? position:  getMiddlePosition(w, h)
   }
 }

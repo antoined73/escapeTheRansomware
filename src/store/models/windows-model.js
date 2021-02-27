@@ -2,11 +2,16 @@ import { action, computed, thunk } from "easy-peasy";
 import { createProgramWindow } from '../../utils/windows/window-utils'
 import { WindowDisplayStatus } from '../../utils/windows/display_status'
 import { clampPosition } from '../../utils/windows/position-utils'
+import { Programs } from "../../utils/windows/program-utils";
 
 const initialState = {
   byId: {},
   allIds: []
 }
+
+const loginWindow = createProgramWindow(Programs.LOGIN);
+initialState.byId[loginWindow.id] = loginWindow;
+initialState.allIds.push(loginWindow.id);
 
 const windowsModel = {
   ...initialState,
@@ -69,7 +74,10 @@ const windowsModel = {
     else actions.minimizeWindow({id});
   }),
   deleteWindow : action((state, payload) => {
+    // Même ici state.allIds et state.byId sont des tableaux "Proxy" (?) quand on les log. Ils ont l'air d'être vides. Je comprends R. Alèd.
+    console.log(payload);
     const {id} = payload;
+    console.log(id);
     state.allIds.splice(state.allIds.indexOf(id), 1);
     delete state.byId[id];
   }),
