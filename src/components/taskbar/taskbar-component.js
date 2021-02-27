@@ -101,10 +101,10 @@ const TaskBar = ({ height }) => {
       })
       .map(window => {
         // affichage des boutons dans la barre des taches
-        const { title, id, isFocused, isMinimized } = window;
+        const { title, id, isFocused, isMinimized, minimizable } = window;
         return (
         <Button key={id} id={id} 
-        onClick={() => { toggleMinimize_sa({id}) }}
+        onClick={() => { minimizable && toggleMinimize_sa({id}) }}
         active={!isMinimized}>
           <span style={{width: 100, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}>{title}</span>
         </Button>);

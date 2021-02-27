@@ -16,9 +16,12 @@ export const WindowProgramIdToWindowTemplate = {
   },
   1 : {
     title: "Welcome to Uni OS",
-    height: 250,
+    height: 300,
     width: 700,
     status: WindowDisplayStatus.FREE,
-    resizable: false
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    closable: false
   }
 }

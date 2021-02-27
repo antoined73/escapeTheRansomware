@@ -17,9 +17,10 @@ const WindowsLayout = () => {
   const displayWindows = () => {
     return windows.map(window => {
       const { id, programId } = window;
+      const WindowContent = programIdToContentComponentMap[programId];
       return (
         <Window key={id} id={id}>
-          {programIdToContentComponentMap[programId]}
+          <WindowContent.type {...WindowContent.props} {...{windowId:id}} />;
         </Window>
       );
     });
