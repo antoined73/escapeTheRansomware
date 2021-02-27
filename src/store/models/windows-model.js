@@ -9,9 +9,15 @@ const initialState = {
   allIds: []
 }
 
-const loginWindow = createProgramWindow(Programs.LOGIN);
-initialState.byId[loginWindow.id] = loginWindow;
-initialState.allIds.push(loginWindow.id);
+// // Login page
+// const loginWindow = createProgramWindow(Programs.LOGIN);
+// initialState.byId[loginWindow.id] = loginWindow;
+// initialState.allIds.push(loginWindow.id);
+
+// Mailz page
+const mailzWindow = createProgramWindow(Programs.MAILZ);
+initialState.byId[mailzWindow.id] = mailzWindow;
+initialState.allIds.push(mailzWindow.id);
 
 const windowsModel = {
   ...initialState,

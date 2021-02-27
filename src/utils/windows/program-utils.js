@@ -2,7 +2,8 @@ import { WindowDisplayStatus } from './display_status'
 
 export const Programs = {
   POLYPOINTS: 0,
-  LOGIN: 1
+  LOGIN: 1,
+  MAILZ: 2
 }
 
 // Overrides windows properties when created
@@ -23,5 +24,11 @@ export const WindowProgramIdToWindowTemplate = {
     minimizable: false,
     maximizable: false,
     closable: false
+  },
+  2 : {
+    title: "Mailz.exe",
+    height: 500,
+    width: 1200,
+    status: WindowDisplayStatus.FREE
   }
 }
