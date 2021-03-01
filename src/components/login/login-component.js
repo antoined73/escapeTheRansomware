@@ -7,12 +7,12 @@ import {
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import Cookies from 'js-cookie';
 import uniLogo from '../../assets/images/uni-logo.svg';
-import windowsModel from '../../store/models/windows-model';
 
 const Login = ({windowId}) => {
 
   let login = useStoreState((state) => state.login);
   let password = useStoreState((state) => state.password);
+  let isLogged = useStoreState((state) => state.isLogged);
 
   const { deleteWindow_sa } = useStoreActions(actions => ({
     deleteWindow_sa: actions.windows.deleteWindow
@@ -28,8 +28,13 @@ const Login = ({windowId}) => {
     password = e.target.value;
   }
 
+  const setIsLogged = (e) => {
+    Cookies.set('isLogged', e);
+    isLogged = e;
+  }
+
   const deleteWindow = () => {
-    // L'id passé en paramètre est correct
+    setIsLogged(true);
     deleteWindow_sa({id:windowId});
   }
 

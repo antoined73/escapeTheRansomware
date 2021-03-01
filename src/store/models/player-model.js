@@ -28,11 +28,21 @@ const getInitPassword = () => {
   }
 }
 
+const getIsLogged = () => {
+  let result = Cookies.get('isLogged');
+  if(result) return result;
+  else {
+    Cookies.set('isLogged', '');
+    return '';
+  }
+}
+
 const initialState = {
   ransom: 9000,
   polypoints: getInitPolypoints(),
   login: getInitLogin(),
-  password: getInitPassword()
+  password: getInitPassword(),
+  isLogged: getIsLogged()
 }
 
 const playerModel = {
