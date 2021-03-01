@@ -2,10 +2,19 @@ import { action, computed, thunk } from "easy-peasy";
 import { createProgramWindow } from '../../utils/windows/window-utils'
 import { WindowDisplayStatus } from '../../utils/windows/display_status'
 import { clampPosition } from '../../utils/windows/position-utils'
+import { Programs } from "../../utils/windows/program-utils";
+import Cookies from 'js-cookie';
 
 const initialState = {
   byId: {},
   allIds: []
+}
+
+const isLogged = Cookies.get('isLogged');
+if (!isLogged) {
+  const loginWindow = createProgramWindow(Programs.LOGIN);
+  initialState.byId[loginWindow.id] = loginWindow;
+  initialState.allIds.push(loginWindow.id);
 }
 
 const windowsModel = {

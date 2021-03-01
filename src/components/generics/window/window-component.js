@@ -20,6 +20,10 @@ const Window = ({id,
   const windows = useStoreState((state) => state.windows);
   const window = windows.byId[id];
 
+  const closable = window.closable;
+  const maximizable = window.maximizable;
+  const minimizable = window.minimizable;
+
   const isMaximized = window.status===WindowDisplayStatus.MAXIMIZED;
   const isMinimized = window.isMinimized;
 
@@ -87,13 +91,13 @@ const Window = ({id,
         <WindowHeader active={window.isFocused} className='window-header is-flex is-justify-content-space-between is-align-items-center'>
           <span className="windowTitle is-unselectable">{window.title}</span>
           <div className='is-flex is-justify-content-space-between is-align-items-center'>
-            <Button onClick={onButtonMinimize}>
+            <Button onClick={onButtonMinimize} disabled={!minimizable}>
               <span className='minimize-icon'>&#9644;</span>
             </Button>
-            <Button onClick={onButtonMaximize}>
+            <Button onClick={onButtonMaximize} disabled={!maximizable}>
               <span className='maximize-icon'>&#9723;</span>
             </Button>
-            <Button onClick={onButtonClose}>
+            <Button onClick={onButtonClose} disabled={!closable}>
               <span className='close-icon'>&#10006;</span>
             </Button>
           </div>
